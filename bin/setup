@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -Ee
+
+LOG_FILE=/tmp/machine-setup.log
+
+_logf() {
+  printf $@ >> ${LOG_FILE} 2>&1
+}
+
+_overwrite_in_terminal() { printf "\r\033[0K$1"; }
+
+_on_exit() {
+  returnCode=$?
+  if [[ ${returnCode} -ne 0 ]]; then
+    printf "\n❌ SETUP ABORTED!\n   Review logfile: %s\n\n" $LOG_FILE
+    _logf '\nSETUP ABORTED - %s\n' "$(date)"
+
+  else
+    printf '\n⭐ SETUP COMPLETED SUCCESSFULLY ⭐\n'
+    _logf '\nSETUP COMPLETED SUCCESSFULLY - %s\n' "$(date)"
+  fi
+  exit $returnCode
+}
+trap _on_exit EXIT
+
+_check_and_install() {
+  tool_name=$1
+  test_cmd=$2
+  install_cmd=$3
+
+  printf 'Checking %s...' "$tool_name"
+  _logf '\nChecking if %s installed...\n' "$tool_name"
+  set +eE
+  bash -c "set -x; $test_cmd" >> ${LOG_FILE} 2>&1
+  TOOL_NOT_INSTALLED=$?
+  set -eE
+
+  if [[ ${TOOL_NOT_INSTALLED} -ne 0 ]]; then
+      _logf '\n%s was not installed. Installing now...\n' "$tool_name"
+      _overwrite_in_terminal "⚠️  $tool_name MISSING. Installing now...\n"
+      bash -c "set -x; $install_cmd" >> ${LOG_FILE} 2>&1
+      _logf '%s installation completed successfully.\n' "$tool_name"
+      printf "✅ %s successfully installed!\n" "$tool_name"
+  else
+      _logf '%s passed installation check command. Skipping installation.\n' "$tool_name"
+      _overwrite_in_terminal "✅ $tool_name\n"
+  fi
+}
+
+printf "\n\n\nRunning Setup Script - %s\n\n" "$(date)" >> ${LOG_FILE} 2>&1
+printf "\n⚡ Running Setup Script ⚡ %s\n" "$(date)"
+printf "📝 Follow the logs: less +F %s\n\n" "${LOG_FILE}"
+
+_check_and_install 'XCode Dev Tools' \
+  'xcode-select -p' \
+  'xcode-select --install'
+_check_and_install 'Brew' \
+  'command -v brew' \
+  'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+_check_and_install 'Ansible' \
+  'command -v ansible' \
+  'brew install ansible'

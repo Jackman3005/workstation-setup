@@ -1,0 +1,93 @@
+---
+downloads: ~/.ansible-downloads/
+
+configure_dotfiles: true
+configure_terminal: true
+configure_osx: true
+
+# Set to 'true' to configure the Dock via dockutil.
+configure_dock: true
+dockitems_remove: []
+ - Launchpad
+ - TV
+ - Podcasts
+ - 'App Store'
+dockitems_persist: []
+
+dotfiles_repo: https://github.com/Jackman3005/dotfiles
+dotfiles_repo_accept_hostkey: true
+dotfiles_repo_local_destination: ~/workspace/dotfiles
+dotfiles_files:
+  - .zshrc
+  - .gitignore
+  - .inputrc
+  - .osx
+  - .vimrc
+
+homebrew_installed_packages:
+  - nmap
+  - nvm
+  - cowsay
+  - lolcat
+  - readline
+  - pv
+  - wget
+  - zsh-history-substring-search
+  - kubectl
+  - tig
+  - postgresql
+  - direnv
+  - git-duet
+  - git
+  - jq
+
+homebrew_taps:
+  - homebrew/core
+  - homebrew/cask
+  - git-duet/homebrew-tap
+
+homebrew_cask_appdir: /Applications
+homebrew_cask_apps:
+  - discord
+  - docker
+  - firefox
+  - licecap
+  - slack
+  - intellij-idea
+  - iterm2
+  - postman
+  - tuple
+  - zoomus
+
+# See `geerlingguy.mas` role documentation for usage instructions.
+mas_installed_app_ids:
+  - 413857545 # divvy
+  - 442160987 # flycut
+  - 985367838 # microsoft outlook
+mas_email: ""
+mas_password: ""
+
+osx_script: "~/.osx --no-restart"
+
+# Install packages from other package managers.
+# Note: You are responsible for making sure the required package managers are
+# installed, eg. through homebrew.
+composer_packages: []
+# - name: drush
+#   state: present # present/absent, default: present
+#   version: "^8.1" # default: N/A
+gem_packages: []
+# - name: bundler
+#   state: present # present/absent/latest, default: present
+#   version: "~> 1.15.1" # default: N/A
+npm_packages: []
+# - name: webpack
+#   state: present # present/absent/latest, default: present
+#   version: "^2.6" # default: N/A
+pip_packages: []
+# - name: mkdocs
+#   state: present # present/absent/latest, default: present
+#   version: "0.16.3" # default: N/A
+
+# Glob pattern to ansible task files to run after all other tasks are finished.
+post_provision_tasks: []
