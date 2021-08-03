@@ -1,0 +1,35 @@
+---
+# presumes that brew installed nvm to /usr/local/opt/nvm/
+
+- name: Create nvm_dir if it does not exist
+  file:
+    mode: 0775
+    path: "{{ nvm_dir }}"
+    state: directory
+  when: nvm_dir | length != 0
+
+- name: Install configured node versions
+  shell: >
+    source /usr/local/opt/nvm/nvm.sh && nvm install {{ item }}
+  args:
+    executable: /bin/bash
+    chdir: "{{ ansible_env.HOME }}"
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/{{ item }}"
+  loop: "{{ nvm_node_versions }}"
+  environment:
+    NVM_DIR: '{{ nvm_dir }}'
+  register: node_install_result
+  changed_when: "'is already installed.' not in node_install_result.stderr"
+
+- name: Set default node version
+  shell: >
+    source /usr/local/opt/nvm/nvm.sh && nvm alias default {{ nvm_node_default_version }} && nvm use default
+  args:
+    executable: /bin/bash
+    chdir: "{{ ansible_env.HOME }}"
+  environment:
+    NVM_DIR: '{{ nvm_dir }}'
+  register: set_default_node_result
+  failed_when: "'! WARNING: Version' in set_default_node_result.stderr"
+
+

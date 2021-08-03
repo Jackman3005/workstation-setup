@@ -1,17 +1,26 @@
 ---
-downloads: ~/.ansible-downloads/
-
 configure_dotfiles: true
-configure_terminal: true
+install_oh_my_zsh: true
+# runs .osx file in dotfiles repo. Tweaks (improves) MacOS system defaults
 configure_osx: true
-
 # Set to 'true' to configure the Dock via dockutil.
 configure_dock: true
-dockitems_remove: []
- - Launchpad
- - TV
- - Podcasts
- - 'App Store'
+
+dockitems_remove:
+  - Launchpad
+  - TV
+  - Podcasts
+  - 'App Store'
+  - Messages
+  - Reminders
+  - Music
+  - News
+  - Notes
+  - Maps
+  - Mail
+  - FaceTime
+  - Books
+  - Contacts
 dockitems_persist: []
 
 dotfiles_repo: https://github.com/Jackman3005/dotfiles
@@ -19,27 +28,31 @@ dotfiles_repo_accept_hostkey: true
 dotfiles_repo_local_destination: ~/workspace/dotfiles
 dotfiles_files:
   - .zshrc
+  - .aliases
   - .gitignore
+  - .gitconfig
   - .inputrc
   - .osx
   - .vimrc
 
 homebrew_installed_packages:
-  - nmap
-  - nvm
-  - cowsay
-  - lolcat
-  - readline
-  - pv
-  - wget
   - zsh-history-substring-search
-  - kubectl
-  - tig
-  - postgresql
-  - direnv
-  - git-duet
+  - readline
+  - wget
+  - bat # better version of cat
+  - jq # JSON parsing tool for terminal
+  - nmap
+  - direnv # auto loads .envrc files. Useful for projects
+  - lolcat # fun way to echo things
+  - cowsay # more fun way to echo things?
+  - nvm # Node Version Manager
+  - yarn
   - git
-  - jq
+  - git-duet
+  - tig
+  - kubectl # kubernetes CLI
+  - doctl   # Digital Ocean command line tool
+  - postgresql
 
 homebrew_taps:
   - homebrew/core
@@ -48,26 +61,51 @@ homebrew_taps:
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
-  - discord
-  - docker
-  - firefox
-  - licecap
-  - slack
-  - intellij-idea
   - iterm2
+  - licecap
+  - docker
   - postman
   - tuple
-  - zoomus
+#  - firefox
+#  - intellij-idea
+#  - discord
+#  - slack
+#  - zoomus
 
 # See `geerlingguy.mas` role documentation for usage instructions.
-mas_installed_app_ids:
-  - 413857545 # divvy
-  - 442160987 # flycut
-  - 985367838 # microsoft outlook
-mas_email: ""
-mas_password: ""
+mas_installed_apps:
+  - {id: 442160987, name: "Flycut"}
+  - {id: 413857545, name: "Divvy"}
+  - {id: 985367838, name: "Microsoft Outlook"}
+  - {id: 462058435, name: "Microsoft Excel"}
+  - {id: 462054704, name: "Microsoft Word"}
+  - {id: 462062816, name: "Microsoft PowerPoint"}
+#  - {id: 823766827, name: "OneDrive"}
+#  - {id: 497799835, name: "Xcode"}
+#  - {id: 784801555, name: "Microsoft OneNote"}
 
+mas_email: "" # will use currently signed-in user if blank
+mas_password: "" # will use currently signed-in user if blank
+
+# defines how to execute the ~/.osx file from the dotfiles repo
+# .osx defines an improved set of MacOSX system defaults
 osx_script: "~/.osx --no-restart"
+
+# SDK Man downloads and configures Java (incl. JAVA_HOME)
+sdkman_auto_answer: true
+sdkman_update: true
+# define the versions of java to install. See: `sdk list java`
+sdkman_install_packages:
+  - { candidate: java, version: 8.0.302-zulu }
+# set the system default version for Java
+sdkman_defaults:
+  java: 8.0.302-zulu
+
+# nvm configuration
+nvm_dir: "{{ ansible_env.HOME }}/.nvm"
+nvm_node_versions:
+  - lts/fermium
+nvm_node_default_version: lts/fermium
 
 # Install packages from other package managers.
 # Note: You are responsible for making sure the required package managers are
@@ -90,4 +128,5 @@ pip_packages: []
 #   version: "0.16.3" # default: N/A
 
 # Glob pattern to ansible task files to run after all other tasks are finished.
-post_provision_tasks: []
+post_provision_tasks:
+  - tasks/install-nodejs-versions.yml

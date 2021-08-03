@@ -13,19 +13,24 @@
 
   roles:
     - role: elliotweiser.osx-command-line-tools
+    - role: Comcast.sdkman
+      tags: ['sdkman']
     - role: geerlingguy.mac.homebrew
       tags: ['homebrew']
-    - role: geerlingguy.dotfiles
-      when: configure_dotfiles
-      tags: ['dotfiles']
     - role: geerlingguy.mac.mas
       when: mas_installed_apps or mas_installed_app_ids
       tags: ['mas']
+    - role: geerlingguy.dotfiles
+      when: configure_dotfiles
+      tags: ['dotfiles']
     - role: geerlingguy.mac.dock
       when: configure_dock
       tags: ['dock']
 
   tasks:
+    - import_tasks: tasks/oh-my-zsh.yml
+      when: install_oh_my_zsh
+
     - import_tasks: tasks/osx.yml
       when: configure_osx
       tags: ['osx']
