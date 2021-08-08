@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -Ee
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd "$SCRIPT_DIR/../"
+
+# Install ansible roles listed in requirements.yml
+ansible-galaxy install --role-file requirements.yml
+
+ansible-playbook main.yml --ask-become-pass

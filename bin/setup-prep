@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -Ee
+
+LOG_FILE=/tmp/workstation-setup.log
+
+# Exported so they are available in bash subshell
+export WORKSTATION_SETUP_PULL_URL=https://github.com/Jackman3005/workstation-setup.git
+export WORKSTATION_SETUP_PUSH_URL=git@github.com:Jackman3005/workstation-setup.git
+
+_logf() {
+  printf "$@"  >> ${LOG_FILE} 2>&1
+}
+
+_overwrite_in_terminal() { printf "\r\033[0K$1"; }
+
+_on_exit() {
+  returnCode=$?
+  if [[ ${returnCode} -ne 0 ]]; then
+    printf "\n❌ SETUP PREP ABORTED!\n   Review logfile: %s\n\n" $LOG_FILE
+    _logf '\nSETUP PREP ABORTED - %s\n' "$(date)"
+
+  else
+    printf '\n⭐ SETUP \033[4mPREP\033[0m COMPLETED SUCCESSFULLY ⭐\n\n'
+    printf '➡️  Next run \033[40;45m%s/bin/ansible-setup\033[0m to complete workstation setup\n' "$HOME/workspace/workstation-setup"
+    _logf '\nSETUP PREP COMPLETED SUCCESSFULLY - %s\n' "$(date)"
+  fi
+  exit $returnCode
+}
+trap _on_exit EXIT
+
+_add_if_missing() {
+  dependency_name=$1
+  test_missing_cmd=$2
+  install_cmd=$3
+
+  printf 'Checking %s...' "$dependency_name"
+  _logf '\nChecking if %s present...\n' "$dependency_name"
+  set +eE
+  bash -c "set -x; $test_missing_cmd" >> ${LOG_FILE} 2>&1
+  TOOL_NOT_INSTALLED=$?
+  set -eE
+
+  if [[ ${TOOL_NOT_INSTALLED} -ne 0 ]]; then
+      _logf '\n%s was not present. Adding now...\n' "$dependency_name"
+      _overwrite_in_terminal "⚠️  $dependency_name MISSING. Adding now...\n"
+      bash -c "set -x; $install_cmd" >> ${LOG_FILE} 2>&1
+      _logf '%s completed successfully.\n' "$dependency_name"
+      printf "🆕 %s added successfully!\n" "$dependency_name"
+  else
+      _logf '%s passed missing dependency check command. Skipping...\n' "$dependency_name"
+      _overwrite_in_terminal "✅ $dependency_name\n"
+  fi
+}
+
+printf "\n\n\nRunning Setup Script - %s\n\n" "$(date)" >> ${LOG_FILE} 2>&1
+printf "\n⚡ Running Setup Script ⚡ %s\n" "$(date)"
+printf "📝 Follow the logs: less +F %s\n\n" "${LOG_FILE}"
+
+_add_if_missing 'XCode Dev Tools' \
+  'xcode-select -p' \
+  'xcode-select --install'
+_add_if_missing 'Brew' \
+  'command -v brew' \
+  'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+_add_if_missing 'Ansible' \
+  'command -v ansible' \
+  'brew install ansible'
+
+mkdir -p "$HOME/workspace"
+
+_add_if_missing 'Workstation Setup Repo' \
+  'cd $HOME/workspace/workstation-setup && [[ "$(git remote get-url origin)" == "$WORKSTATION_SETUP_PULL_URL" ]]' \
+  'cd $HOME/workspace && git clone "$WORKSTATION_SETUP_PULL_URL"'
+
+_add_if_missing 'Workstation Setup Repo [Push URL]' \
+  'cd $HOME/workspace/workstation-setup && [[ "$(git remote get-url origin --push)" == "$WORKSTATION_SETUP_PUSH_URL" ]]' \
+  'cd $HOME/workspace/workstation-setup && git config remote.origin.pushUrl "$WORKSTATION_SETUP_PUSH_URL"'
