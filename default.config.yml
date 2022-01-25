@@ -63,9 +63,9 @@ homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - iterm2
   - licecap
-  - docker
   - postman
-  - tuple
+#  - tuple
+#  - docker
 #  - firefox
 #  - intellij-idea
 #  - discord
@@ -73,13 +73,13 @@ homebrew_cask_apps:
 #  - zoomus
 
 # See `geerlingguy.mas` role documentation for usage instructions.
-mas_installed_apps:
-  - {id: 442160987, name: "Flycut"}
-  - {id: 413857545, name: "Divvy"}
-  - {id: 985367838, name: "Microsoft Outlook"}
-  - {id: 462058435, name: "Microsoft Excel"}
-  - {id: 462054704, name: "Microsoft Word"}
-  - {id: 462062816, name: "Microsoft PowerPoint"}
+mas_installed_apps: []
+#  - {id: 442160987, name: "Flycut"}
+#  - {id: 413857545, name: "Divvy"}
+#  - {id: 985367838, name: "Microsoft Outlook"}
+#  - {id: 462058435, name: "Microsoft Excel"}
+#  - {id: 462054704, name: "Microsoft Word"}
+#  - {id: 462062816, name: "Microsoft PowerPoint"}
 #  - {id: 823766827, name: "OneDrive"}
 #  - {id: 497799835, name: "Xcode"}
 #  - {id: 784801555, name: "Microsoft OneNote"}

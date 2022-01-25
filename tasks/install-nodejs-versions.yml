@@ -10,7 +10,7 @@
 
 - name: Install configured node versions
   shell: >
-    source /usr/local/opt/nvm/nvm.sh && nvm install {{ item }}
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && source /opt/homebrew/opt/nvm/nvm.sh || source /usr/local/opt/nvm/nvm.sh; nvm install {{ item }}
   args:
     executable: /bin/bash
     chdir: "{{ ansible_env.HOME }}"
