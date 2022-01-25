@@ -60,9 +60,13 @@ printf "📝 Follow the logs: less +F %s\n\n" "${LOG_FILE}"
 _add_if_missing 'XCode Dev Tools' \
   'xcode-select -p' \
   'xcode-select --install'
+
 _add_if_missing 'Brew' \
   'command -v brew' \
   'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+# Ensure Homebrew is on path
+[ -s /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+
 _add_if_missing 'Ansible' \
   'command -v ansible' \
   'brew install ansible'
