@@ -31,6 +31,9 @@
     - import_tasks: tasks/oh-my-zsh.yml
       when: install_oh_my_zsh
 
+    - import_tasks: tasks/set-dotfiles-push-remote.yml
+      tags: ['dotfiles']
+
     - import_tasks: tasks/osx.yml
       when: configure_osx
       tags: ['osx']

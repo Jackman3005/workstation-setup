@@ -24,6 +24,7 @@ dockitems_remove:
 dockitems_persist: []
 
 dotfiles_repo: https://github.com/Jackman3005/dotfiles
+dotfiles_repo_push_url: git@github.com:Jackman3005/dotfiles.git
 dotfiles_repo_accept_hostkey: true
 dotfiles_repo_local_destination: ~/workspace/dotfiles
 dotfiles_files:

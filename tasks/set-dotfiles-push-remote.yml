@@ -1,0 +1,24 @@
+---
+- name: Check if dotfiles repository exists
+  stat:
+    path: "{{ dotfiles_repo_local_destination }}"
+  register: repository_exists
+
+- name: Check dotfiles repo push remote URL
+  shell: >
+    [[ "$(git remote get-url origin --push)" == "{{ dotfiles_repo_push_url}}" ]]
+  args:
+    chdir: "{{ dotfiles_repo_local_destination }}"
+  register: dotfiles_repo_push_remote_url_result
+  failed_when: dotfiles_repo_push_remote_url_result.rc is defined and dotfiles_repo_push_remote_url_result.rc > 1
+  changed_when: false
+  when: repository_exists.stat.exists and dotfiles_repo_push_url is defined
+
+
+- name: Update dotfiles repo push remote URL
+  shell: >
+    git config remote.origin.pushUrl "{{ dotfiles_repo_push_url }}"
+  args:
+    chdir: "{{ dotfiles_repo_local_destination }}"
+  when: dotfiles_repo_push_remote_url_result.rc is defined and dotfiles_repo_push_remote_url_result.rc != 0
+
