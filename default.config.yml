@@ -44,6 +44,7 @@ homebrew_installed_packages:
   - jq # JSON parsing tool for terminal
   - nmap
   - direnv # auto loads .envrc files. Useful for projects
+  - figlet # turns text into ascii art `echo 'hello' | figlet | lolcat`
   - lolcat # fun way to echo things
   - cowsay # more fun way to echo things?
   - nvm # Node Version Manager
